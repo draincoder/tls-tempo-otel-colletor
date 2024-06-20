@@ -1,0 +1,15 @@
+services:
+  k6-tracing:
+    image: ghcr.io/grafana/xk6-client-tracing:v0.0.5
+    environment:
+      - ENDPOINT=otel-collector:4317
+    restart: always
+    depends_on:
+      - otel-collector
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.103.0
+    command: [ "--config=/etc/otel-collector.yaml" ]
+    volumes:
+      - ./otel-collector.yaml:/etc/otel-collector.yaml
+      - ./tls:/tls

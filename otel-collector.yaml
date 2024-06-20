@@ -1,0 +1,18 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+exporters:
+  otlp:
+    endpoint: 192.168.0.114:4317
+    tls:
+      insecure: false
+      ca_file: /tls/ca.crt
+      cert_file: /tls/client.crt
+      key_file: /tls/client.key
+      server_name_override: tempo
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp]
