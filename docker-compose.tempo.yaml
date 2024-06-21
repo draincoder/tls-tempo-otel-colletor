@@ -33,3 +33,22 @@ services:
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
     ports:
       - "3000:3000"
+
+  k6-tracing:
+    image: ghcr.io/grafana/xk6-client-tracing:v0.0.5
+    environment:
+      - ENDPOINT=tempo:14317
+    restart: always
+    depends_on:
+      - tempo
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus.yaml
+    ports:
+      - "9090:9090"

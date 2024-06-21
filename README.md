@@ -30,3 +30,10 @@ openssl x509 -req -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out c
 4. Start with `just up`
 5. Open [Grafana](http://127.0.0.1:3000/explore?schemaVersion=1&panes=%7B%22vi4%22:%7B%22datasource%22:%22tempo%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22tempo%22,%22uid%22:%22tempo%22%7D,%22queryType%22:%22traceql%22,%22limit%22:20,%22tableType%22:%22traces%22,%22query%22:%22%7B%7D%22%7D%5D,%22range%22:%7B%22from%22:%22now-1h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1) and explore **traces**
 6. Stop with `just down`
+
+
+### Service Graph
+
+**Tempo** will help you generate `metrics` for **Prometheus** from `traces` and build a **graph of services** based on them
+
+![Service Graph](service-graph.png)

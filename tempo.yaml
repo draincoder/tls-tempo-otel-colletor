@@ -19,6 +19,10 @@ distributor:
             ca_file: /tls/ca.crt
             cert_file: /tls/server.crt
             key_file: /tls/server.key
+    otlp/local:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:14317
 
 ingester:
   max_block_duration: 5m
@@ -27,6 +31,19 @@ compactor:
   compaction:
     block_retention: 1h
 
+metrics_generator:
+  registry:
+    external_labels:
+      source: tempo
+      cluster: docker-compose
+  storage:
+    path: /var/tempo/generator/wal
+    remote_write:
+      - url: http://prometheus:9090/api/v1/write
+        send_exemplars: true
+  traces_storage:
+    path: /var/tempo/generator/traces
+
 storage:
   trace:
     backend: local
@@ -34,3 +51,8 @@ storage:
       path: /var/tempo/wal
     local:
       path: /var/tempo/blocks
+
+overrides:
+  defaults:
+    metrics_generator:
+      processors: [service-graphs, span-metrics, local-blocks]
