@@ -1,31 +1,20 @@
 services:
-  init:
-    image: &tempoImage grafana/tempo:latest
-    user: root
-    entrypoint:
-      - "chown"
-      - "10001:10001"
-      - "/var/tempo"
-    volumes:
-      - ./tempo-data:/var/tempo
-
   tempo:
-    image: *tempoImage
+    image: grafana/tempo:latest
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./tempo.yaml:/etc/tempo.yaml
-      - ./tempo-data:/var/tempo
       - ./tls:/tls
+      - tempo.data:/var/tempo
     ports:
       - "3200:3200"
       - "4317:4317"
-    depends_on:
-      - init
 
   grafana:
     image: grafana/grafana:11.0.0
     volumes:
       - ./grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafana.data:/var/lib/grafana
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -50,5 +39,11 @@ services:
       - --enable-feature=exemplar-storage
     volumes:
       - ./prometheus.yaml:/etc/prometheus.yaml
+      - prometheus.data:/prometheus
     ports:
       - "9090:9090"
+
+volumes:
+  tempo.data: {}
+  grafana.data: {}
+  prometheus.data: {}
